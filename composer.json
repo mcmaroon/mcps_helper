@@ -1,0 +1,27 @@
+{
+    "name": "mcmaroon/mcps_helper",
+    "description": "Prestashop module helper",
+    "keywords": ["prestashop", "helper"],
+    "homepage": "https://github.com/mcmaroon/mcps_helper",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "mcmaroon"
+        }
+    ],
+    "require-dev": {
+        "consolidation/robo": "1.0.6",
+        "phpunit/phpunit": "4.8.35",
+        "monolog/monolog": "1.23"
+    },
+    "autoload": {
+        "psr-4": { 
+            "MCPS\\Helper\\": ""
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
+}
