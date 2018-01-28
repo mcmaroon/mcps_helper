@@ -4,25 +4,14 @@ namespace MCPS\Helper\Configuration;
 trait ConfigurationTrait
 {
 
-    private function getDefaultConfig()
+    private function defaultConfig()
     {
-        throw new \LogicException('You must override the getDefaultConfig() method. The method return an array.');
-    }
-
-    public final function getConfig()
-    {
-        $defaultConfig = $this->getDefaultConfig();
-
-        if (!$dbConfig = \unserialize(\Configuration::get(\strtoupper($this->name)))) {
-            return $defaultConfig;
-        }
-
-        return \array_merge($defaultConfig, $dbConfig);
+        throw new \LogicException('You must override the defaultConfig() method. The method return an array.');
     }
 
     public final function setConfig(array $config)
     {
-        $defaultConfig = $this->getDefaultConfig();
+        $defaultConfig = $this->defaultConfig();
         foreach ($defaultConfig as $defaultConfigKey => $defaultConfigValue) {
             if (\array_key_exists($defaultConfigKey, $config)) {
                 $defaultType = gettype($defaultConfigValue);
@@ -32,5 +21,14 @@ trait ConfigurationTrait
             }
         }
         \Configuration::updateValue(\strtoupper($this->name), \serialize($config), true);
+    }
+
+    public final function getConfig()
+    {
+        $defaultConfig = $this->defaultConfig();
+        if (!$dbConfig = \unserialize(\Configuration::get(\strtoupper($this->name)))) {
+            return $defaultConfig;
+        }
+        return \array_merge($defaultConfig, $dbConfig);
     }
 }

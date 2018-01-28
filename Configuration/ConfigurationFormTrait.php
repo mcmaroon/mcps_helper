@@ -6,51 +6,54 @@ trait ConfigurationFormTrait
 
     use ConfigurationTrait;
 
-    private function mapInputType($type)
+    private $configurationForm = [];
+    private $configurationFormFieldsValue = [];
+
+    private function defaultConfig()
     {
-        $map = [
-            'switch' => 'boolean',
-            'textarea' => 'string',
-        ];
-        return \array_search($type, $map);
+        $this->setConfigurationForm();
+        return $this->configurationFormFieldsValue;
     }
 
-    public final function getFormInputs()
+    public function setConfigurationForm()
     {
-        $inputs = [];
-        foreach ($this->getConfig() as $configKey => $configValue) {
-            $type = $this->mapInputType(\gettype($configValue));
-            switch ($type) {
-                case 'switch':
-                    $values = [
-                        [
-                            'id' => 'active_on',
-                            'value' => true,
-                            'label' => $this->l('Enabled')
-                        ],
-                        [
-                            'id' => 'active_off',
-                            'value' => false,
-                            'label' => $this->l('Disabled')
-                        ]
-                    ];
+        $values = [
+            [
+                'id' => 'active_on',
+                'value' => true,
+                'label' => $this->l('Enabled')
+            ],
+            [
+                'id' => 'active_off',
+                'value' => false,
+                'label' => $this->l('Disabled')
+            ]
+        ];
+        $this->addConfigurationFormElement('switch', 'useModuleCoreCss', true, $this->l('Use Module Css'), null, $values);
+        $this->addConfigurationFormElement('switch', 'useModuleCoreJs', true, $this->l('Use Module Js'), null, $values);
+    }
 
-                    break;
-                default:
-                    $values = [];
-                    break;
-            }
-            $input = [
-                'type' => $type,
-                'name' => $configKey,
-                'label' => $this->l($configKey),
-                'lang' => false,
-                'is_bool' => is_bool($configValue),
-                'values' => $values,
-            ];
-            \array_push($inputs, $input);
+    public final function getConfigurationForm()
+    {
+        return $this->configurationForm;
+    }
+
+    public final function addConfigurationFormElement($type, $configKey, $configValue, $label = null, $description = null, array $values = [], $lang = false)
+    {
+        if ($lang === true) {
+            $configValue = [];
         }
-        return $inputs;
+        $this->configurationFormFieldsValue[$configKey] = $configValue;
+        $this->configurationForm[$configKey] = [
+            'type' => $type,
+            'name' => $configKey,
+            'label' => is_string($label) ? $label : $configKey,
+            'desc' => $description,
+            'lang' => $lang,
+            'is_bool' => is_bool($configValue),
+            'values' => $values,
+            'defaultConfigValue' => $configValue,
+        ];
     }
 
     public final function getConfigForm()
@@ -61,7 +64,7 @@ trait ConfigurationFormTrait
                     'title' => $this->l('Settings'),
                     'icon' => 'icon-cogs',
                 ],
-                'input' => $this->getFormInputs(),
+                'input' => $this->getConfigurationForm(),
                 'submit' => [
                     'title' => $this->l('Save'),
                 ],
@@ -83,14 +86,47 @@ trait ConfigurationFormTrait
         return $this->renderForm();
     }
 
-    /**
-     * Save form data.
-     */
+    private function renderForm()
+    {
+        $helper = new \HelperForm();
+
+        $helper->show_toolbar = false;
+        $helper->table = $this->table;
+        $helper->module = $this;
+        $helper->default_form_language = $this->context->language->id;
+        $helper->allow_employee_form_lang = \Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
+
+        $helper->identifier = $this->identifier;
+        $helper->submit_action = $this->getSubmitAction();
+        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false)
+            . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
+        $helper->token = \Tools::getAdminTokenLite('AdminModules');
+
+        $helper->tpl_vars = array(
+            'fields_value' => $this->getConfig(),
+            'languages' => $this->context->controller->getLanguages(),
+            'id_language' => $this->context->language->id,
+        );
+
+        return $helper->generateForm(array($this->getConfigForm()));
+    }
+
     protected function postProcess()
     {
-        $form_values = $this->getConfig();
-        foreach (array_keys($form_values) as $key) {
-            $form_values[$key] = \Tools::getValue($key);
+        $this->defaultConfig();
+        $languages = \Language::getLanguages(true);
+        $form_values = [];
+        foreach ($this->getConfigurationForm() as $key => $value) {
+            if (!$value['lang']) {
+                $form_values[$key] = \Tools::getValue($key);
+            } else {
+                $value_lang = array();
+                foreach ($languages as $language) {
+                    $id_lang = $language['id_lang'];
+                    $value_lang[$id_lang] = \Tools::getValue($key . '_' . $id_lang);
+                }
+                $form_values[$key] = $value_lang;
+            }
         }
         $this->setConfig($form_values);
     }
