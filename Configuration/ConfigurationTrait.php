@@ -26,7 +26,7 @@ trait ConfigurationTrait
     public final function getConfig()
     {
         $defaultConfig = $this->defaultConfig();
-        if (!$dbConfig = unserialize(\Configuration::get(strtoupper($this->name)))) {
+        if (!$dbConfig = @unserialize(\Configuration::get(strtoupper($this->name)))) {
             return $defaultConfig;
         }
         return array_merge($defaultConfig, $dbConfig);
