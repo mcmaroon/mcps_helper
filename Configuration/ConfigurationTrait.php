@@ -20,13 +20,13 @@ trait ConfigurationTrait
                 }
             }
         }
-        \Configuration::updateValue(strtoupper($this->name), serialize($config), true);
+        \Configuration::updateValue(strtoupper($this->name), base64_encode(serialize($config)), true);
     }
 
     public final function getConfig()
     {
         $defaultConfig = $this->defaultConfig();
-        if (!$dbConfig = @unserialize(\Configuration::get(strtoupper($this->name)))) {
+        if (!$dbConfig = @unserialize(base64_decode(\Configuration::get(strtoupper($this->name))))) {
             return $defaultConfig;
         }
         return array_merge($defaultConfig, $dbConfig);
