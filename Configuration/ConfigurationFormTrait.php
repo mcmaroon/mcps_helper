@@ -38,6 +38,15 @@ trait ConfigurationFormTrait
         return $this->configurationForm;
     }
 
+    public final function addConfigurationBoolean($configKey, $configValue = true, $label = null, $description = null)
+    {
+        $values = [
+            ['id' => 'active_on', 'value' => true, 'label' => $this->l('On')],
+            ['id' => 'active_off', 'value' => false, 'label' => $this->l('Off')]
+        ];
+        $this->addConfigurationFormElement('switch', $configKey, $configValue, $label, $description, $values);
+    }
+
     public final function addConfigurationFormElement($type, $configKey, $configValue, $label = null, $description = null, array $values = [], $lang = false)
     {
         if ($lang === true) {
