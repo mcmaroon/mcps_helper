@@ -1,12 +1,13 @@
 {
     "name": "mcmaroon/mcps_helper",
     "description": "Prestashop module helper",
-    "keywords": ["prestashop", "helper"],
+    "keywords": ["prestashop", "module", "helper"],
     "homepage": "https://github.com/mcmaroon/mcps_helper",
     "license": "MIT",
     "authors": [
         {
-            "name": "mcmaroon"
+            "name": "mcmaroon",
+            "email": "mcmaroonmc@gmail.com"
         }
     ],
     "require-dev": {
