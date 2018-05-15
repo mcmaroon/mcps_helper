@@ -123,7 +123,7 @@ trait ConfigurationFormTrait
     protected function postProcess()
     {
         $this->defaultConfig();
-        $languages = \Language::getLanguages(true);
+        $languages = \Language::getLanguages(false);
         $form_values = [];
         foreach ($this->getConfigurationForm() as $key => $value) {
             if (!$value['lang']) {
