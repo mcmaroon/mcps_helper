@@ -62,6 +62,7 @@ trait ConfigurationFormTrait
             'is_bool' => is_bool($configValue),
             'values' => $values,
             'defaultConfigValue' => $configValue,
+            'autoload_rte' => true,
         ];
     }
 
