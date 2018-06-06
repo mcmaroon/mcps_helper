@@ -66,7 +66,7 @@ trait ConfigurationFormTrait
         ];
     }
 
-    public final function getConfigForm()
+    public function getConfigForm()
     {
         return [
             'form' => [
