@@ -29,6 +29,7 @@ trait ConfigurationFormTrait
                 'label' => $this->l('Disabled')
             ]
         ];
+        $this->addConfigurationFormElement('switch', 'debugMode', true, $this->l('Debug Mode'), null, $values);
         $this->addConfigurationFormElement('switch', 'useModuleCoreCss', true, $this->l('Use Module Css'), null, $values);
         $this->addConfigurationFormElement('switch', 'useModuleCoreJs', true, $this->l('Use Module Js'), null, $values);
     }
