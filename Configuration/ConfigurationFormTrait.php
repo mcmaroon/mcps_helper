@@ -96,7 +96,7 @@ trait ConfigurationFormTrait
         return $this->renderForm();
     }
 
-    private function renderForm()
+    protected function renderForm()
     {
         $helper = new \HelperForm();
 
