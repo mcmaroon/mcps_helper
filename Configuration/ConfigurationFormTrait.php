@@ -1,4 +1,5 @@
 <?php
+
 namespace MCPS\Helper\Configuration;
 
 trait ConfigurationFormTrait
@@ -15,9 +16,9 @@ trait ConfigurationFormTrait
         return $this->configurationFormFieldsValue;
     }
 
-    public function setConfigurationForm()
+    protected final function prepareActiveValues()
     {
-        $values = [
+        return [
             [
                 'id' => 'active_on',
                 'value' => true,
@@ -29,7 +30,12 @@ trait ConfigurationFormTrait
                 'label' => $this->l('Disabled')
             ]
         ];
-        $this->addConfigurationFormElement('switch', 'debugMode', true, $this->l('Debug Mode'), null, $values);
+    }
+
+    public function setConfigurationForm()
+    {
+        $values = $this->prepareActiveValues();
+        $this->addConfigurationFormElement('switch', 'debugMode', false, $this->l('Debug Mode'), null, $values);
         $this->addConfigurationFormElement('switch', 'useModuleCoreCss', true, $this->l('Use Module Css'), null, $values);
         $this->addConfigurationFormElement('switch', 'useModuleCoreJs', true, $this->l('Use Module Js'), null, $values);
     }
@@ -90,7 +96,7 @@ trait ConfigurationFormTrait
 
     public function getContent()
     {
-        if (((bool) \Tools::isSubmit($this->getSubmitAction())) == true) {
+        if (((bool)\Tools::isSubmit($this->getSubmitAction())) == true) {
             $this->postProcess();
         }
 
