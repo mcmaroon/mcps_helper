@@ -34,10 +34,9 @@ trait ConfigurationFormTrait
 
     public function setConfigurationForm()
     {
-        $values = $this->prepareActiveValues();
-        $this->addConfigurationFormElement('switch', 'debugMode', false, $this->l('Debug Mode'), null, $values);
-        $this->addConfigurationFormElement('switch', 'useModuleCoreCss', true, $this->l('Use Module Css'), null, $values);
-        $this->addConfigurationFormElement('switch', 'useModuleCoreJs', true, $this->l('Use Module Js'), null, $values);
+        $this->addConfigurationBoolean('debugMode', false, $this->l('Debug Mode'));
+        $this->addConfigurationBoolean('useModuleCoreCss', true, $this->l('Use Module Css'));
+        $this->addConfigurationBoolean('useModuleCoreJs', true, $this->l('Use Module Js'));
     }
 
     public final function getConfigurationForm()
@@ -47,10 +46,7 @@ trait ConfigurationFormTrait
 
     public final function addConfigurationBoolean($configKey, $configValue = true, $label = null, $description = null)
     {
-        $values = [
-            ['id' => 'active_on', 'value' => true, 'label' => $this->l('On')],
-            ['id' => 'active_off', 'value' => false, 'label' => $this->l('Off')]
-        ];
+        $values = $this->prepareActiveValues();
         $this->addConfigurationFormElement('switch', $configKey, $configValue, $label, $description, $values);
     }
 
