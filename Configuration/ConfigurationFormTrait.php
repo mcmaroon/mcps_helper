@@ -50,10 +50,21 @@ trait ConfigurationFormTrait
         $this->addConfigurationFormElement('switch', $configKey, $configValue, $label, $description, $values);
     }
 
+    public final function addConfigurationText($configKey, $configValue = null, $label = null, $description = null, array $values = [], $lang = false)
+    {
+
+        $this->addConfigurationFormElement('text', $configKey, $configValue, $label, $description, $values, $lang);
+    }
+
+    public final function addConfigurationTextArea($configKey, $configValue = null, $label = null, $description = null, array $values = [], $lang = false)
+    {
+        $this->addConfigurationFormElement('textarea', $configKey, $configValue, $label, $description, $values, $lang);
+    }
+
     public final function addConfigurationFormElement($type, $configKey, $configValue, $label = null, $description = null, array $values = [], $lang = false)
     {
-        if ($lang === true) {
-            $configValue = [];
+        if ($lang && (!is_array($configValue) || empty($configValue))) {
+            $configValue = $this->prepareLangConfigValue();
         }
         $this->configurationFormFieldsValue[$configKey] = $configValue;
         $this->configurationForm[$configKey] = [
@@ -68,6 +79,17 @@ trait ConfigurationFormTrait
             'autoload_rte' => true,
         ];
     }
+
+    private function prepareLangConfigValue()
+    {
+        $configValue = [];
+        $languages = \Language::getLanguages(false);
+        foreach ($languages as $language) {
+            $configValue[$language['id_lang']] = '';
+        }
+        return $configValue;
+    }
+
 
     public function getConfigForm()
     {
