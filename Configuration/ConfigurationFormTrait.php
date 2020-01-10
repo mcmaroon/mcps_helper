@@ -35,6 +35,7 @@ trait ConfigurationFormTrait
     public function setConfigurationForm()
     {
         $this->addConfigurationBoolean('debugMode', false, $this->l('Debug Mode'));
+        $this->addConfigurationBoolean('demoMode', false, $this->l('Demo Mode'));
         $this->addConfigurationBoolean('useModuleCoreCss', true, $this->l('Use Module Css'));
         $this->addConfigurationBoolean('useModuleCoreJs', true, $this->l('Use Module Js'));
     }
