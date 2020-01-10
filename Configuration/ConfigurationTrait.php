@@ -1,4 +1,5 @@
 <?php
+
 namespace MCPS\Helper\Configuration;
 
 trait ConfigurationTrait
@@ -30,5 +31,16 @@ trait ConfigurationTrait
             return $defaultConfig;
         }
         return array_merge($defaultConfig, $dbConfig);
+    }
+
+    public final function getConfigKey($key)
+    {
+        $config = $this->getConfig();
+
+        if (!in_array($key, array_keys($config))) {
+            return null;
+        }
+
+        return $config[$key];
     }
 }
